@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="what you probably cant see when you look up - satellites, planets, stars, and more!">
+    <meta name="keywords" content="astronomy, satellites, stars, planets, zenith, sky, celestial objects">
+    <meta name="author" content="StarBot">
+    <title>what you probably cant see when you look up</title>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="what you probably cant see when you look up">
+    <meta property="og:description" content="haha caught you looking up idiot - discover satellites, planets, and stars overhead">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
+    
+    <!-- Leaflet CSS for map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated Stars Background -->
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+    
+    <div class="container">
+        <header>
+            <h1>🌌 what you probably cant see when you look up</h1>
+            <p class="subtitle">haha caught you looking up idiot</p>
+        </header>
+
+        <main>
+            <!-- Location Section -->
+            <section class="location-section">
+                <div id="locationInfo" class="info-box">
+                    <h3>Your Location</h3>
+                    <p><strong>Latitude:</strong> <span id="latitude">-</span>°</p>
+                    <p><strong>Longitude:</strong> <span id="longitude">-</span>°</p>
+                    <p><strong>Altitude:</strong> <span id="altitude">-</span> m</p>
+                    <p><strong>Accuracy:</strong> <span id="accuracy">-</span> m</p>
+                </div>
+            </section>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading hidden">
+                <div class="spinner"></div>
+                <p id="loadingMessage">Scanning the sky above you...</p>
+            </div>
+
+            <!-- Error Display -->
+            <div id="errorDisplay" class="error-box hidden"></div>
+
+            <!-- Celestial Coordinates -->
+            <section id="celestialInfo" class="info-section hidden">
+                <h2>
+                    Zenith Coordinates
+                    <span class="info-icon" data-tooltip="The zenith is the point in the sky directly above you. These coordinates (Right Ascension and Declination) tell you which part of the celestial sphere is overhead at your location and time. Think of it as GPS coordinates for the sky!">ℹ️</span>
+                </h2>
+                <div class="coordinate-grid">
+                    <div class="coordinate-item">
+                        <label>
+                            Right Ascension (RA)
+                            <span class="info-icon" data-tooltip="Right Ascension is like longitude on Earth, but for the sky. It measures east-west position in hours (0-24h) along the celestial equator.">ℹ️</span>
+                        </label>
+                        <span id="ra">-</span>
+                    </div>
+                    <div class="coordinate-item">
+                        <label>
+                            Declination (Dec)
+                            <span class="info-icon" data-tooltip="Declination is like latitude on Earth, but for the sky. It measures north-south position in degrees (-90° to +90°) from the celestial equator.">ℹ️</span>
+                        </label>
+                        <span id="dec">-</span>
+                    </div>
+                    <div class="coordinate-item">
+                        <label>
+                            Local Sidereal Time
+                            <span class="info-icon" data-tooltip="Local Sidereal Time is a time scale based on Earth's rotation relative to distant stars. It tells you which Right Ascension is currently crossing your meridian (north-south line overhead).">ℹ️</span>
+                        </label>
+                        <span id="lst">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section hidden">
+                <h2>✨ look up!! this is in the sky</h2>
+                
+                <!-- Primary Object at Zenith -->
+                <div id="zenithObject" class="object-card primary hidden">
+                    <h3>Directly Above (Zenith)</h3>
+                    <div id="zenithContent"></div>
+                </div>
+
+                <!-- Nearby Objects -->
+                <div id="nearbyObjects" class="object-list hidden">
+                    <h3>Nearby Objects (within 10°)</h3>
+                    <div id="nearbyContent"></div>
+                </div>
+
+                <!-- Airplanes -->
+                <div id="airplaneObjects" class="object-list hidden">
+                    <div class="collapsible-header" id="airplaneHeader">
+                        <h3>✈️ air planes in the night sky (<span id="airplaneCount">0</span>)</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    
+                    <div id="airplaneCollapsibleContent" class="collapsible-content" style="display: block;">
+                        <!-- Map Toggle Button -->
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <button id="toggleMapBtn" class="secondary-btn" style="padding: 8px 20px; font-size: 0.9rem;">
+                                🗺️ Show Map View
+                            </button>
+                        </div>
+                        
+                        <!-- Map Container -->
+                        <div id="airplaneMap" class="map-container hidden"></div>
+                        
+                        <!-- Flight List -->
+                        <div id="airplaneContent"></div>
+                    </div>
+                </div>
+
+                <!-- Satellites -->
+                <div id="satelliteObjects" class="object-list hidden">
+                    <div class="collapsible-header" id="satelliteHeader">
+                        <h3>🛰️ metal chunks above you rn (<span id="satelliteCount">0</span>)</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    
+                    <div id="satelliteCollapsibleContent" class="collapsible-content" style="display: block;">
+                        <div id="satelliteContent"></div>
+                    </div>
+                </div>
+
+                <!-- Planets & Solar System -->
+                <div id="planetObjects" class="object-list hidden">
+                    <h3>🪐 Solar System Objects</h3>
+                    <div id="planetContent"></div>
+                </div>
+
+                <!-- Stars -->
+                <div id="starObjects" class="object-list hidden">
+                    <h3>⭐ Stars</h3>
+                    <div id="starContent"></div>
+                </div>
+
+                <!-- Interesting Celestial Bodies -->
+                <div id="celestialBodyObjects" class="object-list hidden">
+                    <h3>🤩 stars for my star 🤩🤩🤩🤩</h3>
+                    <div id="celestialBodyContent"></div>
+                </div>
+
+                <!-- No Results -->
+                <div id="noResults" class="info-box hidden">
+                    <p>No major celestial objects are directly overhead at this moment. The zenith point is in deep space between stars.</p>
+                </div>
+            </section>
+
+            <!-- Refresh Button -->
+            <div id="refreshSection" class="hidden">
+                <button id="refreshBtn" class="secondary-btn">
+                    🔄 Refresh Sky Data
+                </button>
+                <p class="timestamp">Last updated: <span id="lastUpdate">-</span></p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Data sources: NASA JPL Horizons, OpenSky Network, AviationStack, CelesTrak, Yale Bright Star Catalog, Solar System OpenData</p>
+            <p class="note">⚠️ Location permission required. All processing happens in your browser.</p>
+            <p class="note">📖 <a href="https://github.com/yourusername/StarBot" target="_blank" style="color: #4a90e2; text-decoration: none;">View on GitHub</a></p>
+        </footer>
+    </div>
+
+    <!-- Load satellite.js library for satellite calculations -->
+    <script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
+    
+    <!-- Load Leaflet.js for maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Load application modules -->
+    <script src="js/config.js"></script>
+    <script src="js/astronomy.js"></script>
+    <script src="js/location.js"></script>
+    <script src="js/facts.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/display.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

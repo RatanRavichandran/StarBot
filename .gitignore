@@ -1,0 +1,27 @@
+# Node modules (if you add any npm packages later)
+node_modules/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+
+# Build outputs (if you add build tools later)
+dist/
+build/
+
+# Temporary files
+*.tmp
+temp/
