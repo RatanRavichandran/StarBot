@@ -6,7 +6,9 @@ const CONFIG = {
     
     // Backend Server API (use this when running with Node.js backend)
     USE_BACKEND: true, // Set to true to use backend proxy, false for direct API calls
-    BACKEND_URL: 'http://localhost:3001/api',
+    BACKEND_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:3001/api' 
+        : 'https://your-backend-url.onrender.com/api', // Replace with your Render URL after deployment
     
     // API Endpoints (direct - only used when USE_BACKEND is false)
     HORIZONS_API: 'https://ssd.jpl.nasa.gov/api/horizons.api',
