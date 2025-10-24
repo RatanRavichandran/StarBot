@@ -8,7 +8,7 @@ const CONFIG = {
     USE_BACKEND: true, // Set to true to use backend proxy, false for direct API calls
     BACKEND_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'http://localhost:3001/api' 
-        : 'https://your-backend-url.onrender.com/api', // Replace with your Render URL after deployment
+        : 'https://starbot-backend.onrender.com/api', // Your Render backend URL
     
     // API Endpoints (direct - only used when USE_BACKEND is false)
     HORIZONS_API: 'https://ssd.jpl.nasa.gov/api/horizons.api',
